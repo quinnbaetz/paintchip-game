@@ -24,10 +24,10 @@ var stack = null;
 var leftShift = 50;
 var finishedURL = "";
 var url = null;
-var oldGameURL = "http://neuron.illinois.edu/games/ajax/getOldGame.php?";
-var colorDataURL = "http://neuron.illinois.edu/games/ajax/getColorFrequency.php?"+Math.random();
-var dataURL = "http://neuron.illinois.edu/games/ajax/getColors.php";
-var baseURL = "http://neuron.illinois.edu/games/paintchip.php";
+var oldGameURL = "http://neuron.illinois.edu/games/paintchip/ajax/getOldGame.php?";
+var colorDataURL = "http://neuron.illinois.edu/games/paintchip/ajax/getColorFrequency.php?"+Math.random();
+var dataURL = "http://neuron.illinois.edu/games/paintchip/ajax/getColors.php";
+var baseURL = "http://neuron.illinois.edu/games/paintchip/index.php";
 
 
 var scrollSpeed = 0;
@@ -42,9 +42,8 @@ var graph;
 var gBuckets;
 var gBars;
 //var gTitle;
-var colorPercentages;
 var graphHeight = 300;
-var graphY = 400;
+var graphY = 520;
 
 function processXMLData(e:Event):void{
 	try{
@@ -540,9 +539,7 @@ function createGraph(){
 				   "height", graphHeight);
 	
 
-	var myFormat:TextFormat = new TextFormat();
-	myFormat.align = TextFormatAlign.CENTER;
-	myFormat.size =20;
+	
 	/*
 	gTitle = new TextField();
 	
@@ -555,7 +552,67 @@ function createGraph(){
 				   "text", ""
 				  );
 	*/
-	colorPercentages = new Array();
+	var myFormat:TextFormat = new TextFormat();
+	myFormat.align = TextFormatAlign.CENTER;
+	myFormat.size = 30;
+	
+	var Title = new TextField();
+	setProps(Title, "x", myStage.width/2-50,
+		"y", graphY-520,
+	   "width", myStage.width/2-100,
+	   "height", 40,
+	   "textColor", "0x000000",
+	   "text", "Compare Your Results"
+	  );
+	myStage.addChild(Title);
+	Title.setTextFormat(myFormat);
+	
+	var Title2 = new TextField();
+	setProps(Title2, "x", 0,
+		"y", graphY-520,
+	   "width", myStage.width/2-100,
+	   "height", 40,
+	   "textColor", "0x000000",
+	   "text", "Your Paint Chips"
+	  );
+	myStage.addChild(Title2);
+	Title2.setTextFormat(myFormat);
+	
+	
+	myFormat = new TextFormat();
+	myFormat.align = TextFormatAlign.CENTER;
+	myFormat.size = 19;
+	
+	
+	var description = new TextField();
+	setProps(description, "x", myStage.width/2-75,
+		"y", graphY-480,
+	   "width", myStage.width/2-75,
+	   "height", 120,
+	   "textColor", "0x000000",
+	   "wordWrap", true,
+	   "text", "The bars below show how all other players classified your selected chip.  The higher a bar, the more times the chip was placed in that bucket."
+	  );
+	myStage.addChild(description);
+	description.setTextFormat(myFormat);
+	
+	var description2 = new TextField();
+	setProps(description2, "x", 0,
+		"y", graphY-480,
+	   "width", myStage.width/2-100,
+	   "height", 120,
+	   "textColor", "0x000000",
+	   "wordWrap", true,
+	   "text", "Place your cursor over a chip to see the name of the color.  You can also compare your classification of the chip in the graph to the right."
+	   );
+	myStage.addChild(description2);
+	description2.setTextFormat(myFormat);
+	
+	
+	myFormat = new TextFormat();
+	myFormat.align = TextFormatAlign.CENTER;
+	myFormat.size =20;
+	  
 	for(var k = 0; k<11; k+=2){
 		var temp = new TextField();
 	
@@ -582,7 +639,7 @@ function createGraph(){
 			bucket[obj].width = w;
 			bucket[obj].height = h;
 			bucket[obj].x = 400+w*i;
-			bucket[obj].y =430;
+			bucket[obj].y =430+graphY-400;
 		}
 		 bucket["count"].text = "0%";
 		  bucket["count"].y += 50;
@@ -627,7 +684,7 @@ function bucketRally(bucket, obj, i){
 	createTween(bucket[obj], "width", Regular.easeInOut, bucket["front"].width/3);
 	createTween(bucket[obj], "height", Regular.easeInOut, bucket["front"].height/3);
 	var newX = bucket["front"].width/2+(myStage.width/2-(buckets.length*bucket["front"].width/2)+bucket[obj].x-bucket["front"].x+(bucket["front"].width*i))/3;
-	var newY = (bucket[obj].y-bucket["front"].y+bucket["front"].height/2+bucket["back"].height/2)/2+moveY;
+	var newY = (bucket[obj].y-bucket["front"].y+bucket["front"].height/2+bucket["back"].height/2)/2+moveY+graphY-400;
 	createTween(bucket[obj], "x", Regular.easeInOut, newX);
 	createTween(bucket[obj], "y", Regular.easeInOut, newY, -1, 10, function(){
 	createTween(bucket[obj], "rotation", Regular.easeInOut, 180, -1, 20);
