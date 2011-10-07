@@ -1,6 +1,5 @@
 ﻿	include "../utility.as";
 import flash.external.ExternalInterface;
-
 ExternalInterface.addCallback("grabColorValues", grabColorValues);
 ExternalInterface.addCallback("startGame", startGame);
 ExternalInterface.addCallback("endGame", endGame);
@@ -44,7 +43,6 @@ var gBars;
 //var gTitle;
 var graphHeight = 300;
 var graphY = 520;
-
 function processXMLData(e:Event):void{
 	try{
 		var xml = new XML(e.target.data);
@@ -486,12 +484,19 @@ function squareDrop(square, j){
 					createTween(gBars[i], "height", Regular.easeInOut, toAdd);
 		
 					gBuckets[i].count.text = int(100*ratio) + "%"; 
+					
+					createTween(gBuckets[i].count, "y", Regular.easeInOut, graphY-toAdd+.02*toAdd-gBuckets[i].count.height/2);
 				}
 				
 				var cName = "'" + obj.color.@title +"'";
 				//fTrace(cName);
+				graph.title.text = "Player Classification of "+cName;
+				//myFormat = new TextFormat();
+				//myFormat.align = TextFormatAlign.CENTER;
+				//myFormat.size = 24;
+				//myTitle.setTextFormat(myFormat);
 				
-				ExternalInterface.call("updateColor", cName);
+				//ExternalInterface.call("updateColor", cName);
 				
 				
 				
@@ -608,11 +613,52 @@ function createGraph(){
 	myStage.addChild(description2);
 	description2.setTextFormat(myFormat);
 	
+	myFormat = new TextFormat();
+	myFormat.align = TextFormatAlign.CENTER;
+	myFormat.size = 22;
+	
+	
+	var myTitle = new TextField();
+	myTitle.defaultTextFormat = (myFormat);
+	setProps(myTitle, "x", myStage.width/2-75,
+		"y", graphY-340,
+	   "width", myStage.width/2-75,
+	   "height", 120,
+	   "textColor", "0x000000",
+	   "wordWrap", true,
+	   "text", "Player Classification of ..."
+	  );
+	graph.title = myTitle;
+	myStage.addChild(myTitle);
+	//myTitle.setTextFormat(myFormat);
+	
+	
+	myFormat = new TextFormat();
+	myFormat.align = TextFormatAlign.CENTER;
+	myFormat.size =19;
+	
+	var yTitle = new TextField();
+	setProps(yTitle, "x", myStage.width/2-75,
+		"y", graphY+75,
+	   "width", myStage.width/2-75,
+	   "height", 120,
+	   "textColor", "0x000000",
+	   "wordWrap", true,
+	   "text", "Bucket Color"
+	  );
+	myStage.addChild(yTitle);
+	yTitle.setTextFormat(myFormat);
+	
+	
+	var sideTitle = addImage("title",  myStage.width/2-110, graphY-250);
+	myStage.addChild(sideTitle);
+	
 	
 	myFormat = new TextFormat();
 	myFormat.align = TextFormatAlign.CENTER;
 	myFormat.size =20;
-	  
+	
+	
 	for(var k = 0; k<11; k+=2){
 		var temp = new TextField();
 	
@@ -642,7 +688,7 @@ function createGraph(){
 			bucket[obj].y =430+graphY-400;
 		}
 		 bucket["count"].text = "0%";
-		  bucket["count"].y += 50;
+		  bucket["count"].y -= 50;
 		    bucket["back"].y -= 5;
 																			 
 	}
@@ -772,5 +818,15 @@ function endGame(actualGame):void {
 	}
 }
 
-
+function addImage(className,x ,y){
+	var ClassReference:Class = getDefinitionByName(className) as Class;
+	var instance:* = new ClassReference();
+	var myImage:Bitmap = new Bitmap(instance);
+	var sprite:Sprite = new Sprite();
+	sprite.x = x;
+	sprite.y = y;
+	sprite.addChild(myImage);
+	//stage.addChild(sprite);
+	return sprite;
+}
 
